@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toggleMenu } from "../utils/appSlice";
 import { YOUTUBE_SUGGESTIONS_API } from "../utils/constants";
 import { cachedResult } from "../utils/searchSlice";
+import { setFilteredVideos } from "../utils/videoSlice";
 
 const Head = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -12,6 +13,18 @@ const Head = () => {
   const dispatch = useDispatch();
 
   const searchCache = useSelector((state) => state.search);
+
+  // const allVideos = useSelector((state) => state.videos?.videosArray);
+  const { videos, filteredVideos } = useSelector((state) => state.videos);
+
+  console.log("asaihohoi ddaiooo all vieos", videos);
+  console.log("featured all vieos", filteredVideos);
+
+  const filterSearch = (searchQuery, videos) => {
+    return videos.filter((video) =>
+      video.snippet.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  };
 
   //  searchCache- {"ip": ["iphone 11", "iphone 13"]  }
 
@@ -77,7 +90,16 @@ const Head = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
           className="rounded-lg border-solid border-2 w-96 border-gray-500 mt-8 p-1  border-r-1 border-l-5 rounded-l-xl rounded-r-none"
         />
-        <button className="border-solid border-2 border-gray-500 border-r-1 border-l-0 p-1  rounded-r-xl rounded-l-none">
+        <button
+          className="border-solid border-2 border-gray-500 border-r-1 border-l-0 p-1  rounded-r-xl rounded-l-none"
+          onClick={() => {
+            const data = filterSearch(searchQuery, videos);
+
+            console.log("datadtatdatdatdtatdatdtatd", data);
+
+            dispatch(setFilteredVideos(data));
+          }}
+        >
           Search
         </button>
 
